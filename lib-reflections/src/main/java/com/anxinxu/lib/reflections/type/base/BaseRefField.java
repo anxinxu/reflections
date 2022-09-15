@@ -16,4 +16,19 @@ public abstract class BaseRefField extends BaseRef<Field> {
         return ReflectUtil.getFieldOrNull(targetClass, name);
     }
 
+    public Class<?> fieldType() {
+        return target != null ? target.getType() : null;
+    }
+
+    public Field field() {
+        return target;
+    }
+
+    public String fieldName() {
+        return targetName;
+    }
+
+    public Class<?> targetClass() {
+        return targetClass;
+    }
 }

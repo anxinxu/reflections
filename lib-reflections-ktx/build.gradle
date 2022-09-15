@@ -11,7 +11,7 @@ java {
 
 dependencies {
 //    api(project(":lib-reflections"))
-    api "com.github.anxinxu.reflections:Reflections:1.0"
+    api "com.github.anxinxu.reflections:Reflections:1.1"
 }
 
 
@@ -45,7 +45,7 @@ afterEvaluate {
                 // You can then customize attributes of the publication as shown below.
                 groupId = 'com.anxinxu.lib'
                 artifactId = 'Reflections-ktx'
-                version = '1.0'
+                version = '1.1'
             }
         }
     }

@@ -25,4 +25,24 @@ public class BaseRefMethod extends BaseRef<Method> {
             return null;
         }
     }
+
+    public Method method() {
+        return target;
+    }
+
+    public Class<?> returnType() {
+        return target != null ? target.getReturnType() : null;
+    }
+
+    public Class<?>[] params() {
+        return params;
+    }
+
+    public String methodName() {
+        return targetName;
+    }
+
+    public Class<?> targetClass() {
+        return targetClass;
+    }
 }

@@ -7,7 +7,7 @@ import com.anxinxu.lib.reflections.type.base.api.IRefConstructor;
 
 import java.lang.reflect.Constructor;
 
-public class RefConstructor<T> extends BaseRef<Constructor<?>> implements IRefConstructor<T> {
+public class RefConstructor<T> extends BaseRef<Constructor<T>> implements IRefConstructor<T> {
 
     public static final RefTypeFactory.Factory<RefConstructor<?>> CREATOR = new RefTypeFactory.Factory<RefConstructor<?>>() {
         @Override
@@ -21,13 +21,15 @@ public class RefConstructor<T> extends BaseRef<Constructor<?>> implements IRefCo
     }
 
     @Override
-    protected Constructor<?> getTarget(String name) {
+    protected Constructor<T> getTarget(String name) {
         try {
             Class<?>[] types = params;
             if (types == null || types.length == 0) {
-                return ReflectUtil.getConstructorOrNull(targetClass);
+                //noinspection unchecked
+                return (Constructor<T>) ReflectUtil.getConstructorOrNull(targetClass);
             } else {
-                return ReflectUtil.getConstructorOrNull(targetClass, types);
+                //noinspection unchecked
+                return (Constructor<T>) ReflectUtil.getConstructorOrNull(targetClass, types);
             }
         } catch (Throwable throwable) {
             return null;
@@ -44,14 +46,24 @@ public class RefConstructor<T> extends BaseRef<Constructor<?>> implements IRefCo
         try {
             setError(null);
             if (params == null || params.length == 0) {
-                //noinspection unchecked
-                return (T) target.newInstance();
+                return target.newInstance();
             }
-            //noinspection unchecked
-            return (T) target.newInstance(params);
+            return target.newInstance(params);
         } catch (Exception e) {
             setError(e);
             return defValue;
         }
+    }
+
+    public Constructor<T> constructor() {
+        return target;
+    }
+
+    public Class<?>[] params() {
+        return params;
+    }
+
+    public Class<?> targetClass() {
+        return targetClass;
     }
 }
