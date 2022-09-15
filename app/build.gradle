@@ -47,8 +47,9 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
 //    implementation(project(":lib-reflections"))
-    implementation(project(":lib-reflections-ktx"))
-//    implementation 'com.anxinxu.lib:Reflections-ktx:1.0'
+//    implementation(project(":lib-reflections-ktx"))
+    implementation 'com.github.anxinxu.reflections:Reflections-ktx:1.0'
+    implementation 'com.github.anxinxu.reflections:Reflections:1.0'
 
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.7.10")
 }

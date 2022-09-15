@@ -10,8 +10,8 @@ java {
 }
 
 dependencies {
-    api(project(":lib-reflections"))
-//    api "com.anxinxu.lib:Reflections:1.0"
+//    api(project(":lib-reflections"))
+    api "com.github.anxinxu.reflections:Reflections:1.0"
 }
 
 
