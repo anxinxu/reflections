@@ -1,0 +1,7 @@
+package com.anxinxu.lib.reflections.type.base.api;
+
+public interface IRefConstructor<T> {
+
+    T newInstance(Object... params);
+    T newInstance(T defValue, Object... params);
+}
