@@ -9,8 +9,8 @@ public class RefStaticLong extends BaseRefStaticField<RefLong> implements IRefLo
 
     public static final RefTypeFactory.Factory<RefStaticLong> CREATOR = new RefTypeFactory.Factory<RefStaticLong>() {
         @Override
-        public RefStaticLong create(Class<RefStaticLong> fieldType, Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params) {
-            return new RefStaticLong(RefTypeFactory.create(RefLong.class, targetClass, targetName, targetClassName, params));
+        public RefStaticLong create(Class<RefStaticLong> fieldType, Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params, boolean lazyLoadTarget) {
+            return new RefStaticLong(RefTypeFactory.create(RefLong.class, targetClass, targetName, targetClassName, params, lazyLoadTarget));
         }
     };
 

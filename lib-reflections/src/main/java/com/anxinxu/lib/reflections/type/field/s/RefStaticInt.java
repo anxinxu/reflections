@@ -9,8 +9,8 @@ public class RefStaticInt extends BaseRefStaticField<RefInt> implements IRefIntS
 
     public static final RefTypeFactory.Factory<RefStaticInt> CREATOR = new RefTypeFactory.Factory<RefStaticInt>() {
         @Override
-        public RefStaticInt create(Class<RefStaticInt> fieldType, Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params) {
-            return new RefStaticInt(RefTypeFactory.create(RefInt.class, targetClass, targetName, targetClassName, params));
+        public RefStaticInt create(Class<RefStaticInt> fieldType, Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params, boolean lazyLoadTarget) {
+            return new RefStaticInt(RefTypeFactory.create(RefInt.class, targetClass, targetName, targetClassName, params, lazyLoadTarget));
         }
     };
 

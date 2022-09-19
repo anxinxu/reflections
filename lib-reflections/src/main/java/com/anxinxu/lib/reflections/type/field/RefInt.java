@@ -8,13 +8,13 @@ public class RefInt extends BaseRefField implements IRefIntField {
 
     public static final RefTypeFactory.Factory<RefInt> CREATOR = new RefTypeFactory.Factory<RefInt>() {
         @Override
-        public RefInt create(Class<RefInt> fieldType, Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params) {
-            return new RefInt(targetClass, targetName, targetClassName, params);
+        public RefInt create(Class<RefInt> fieldType, Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params, boolean lazyLoadTarget) {
+            return new RefInt(targetClass, targetName, targetClassName, params, lazyLoadTarget);
         }
     };
 
-    public RefInt(Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params) {
-        super(targetClass, targetName, targetClassName, params);
+    public RefInt(Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params, boolean lazyLoadTarget) {
+        super(targetClass, targetName, targetClassName, params, lazyLoadTarget);
     }
 
     @Override
@@ -26,7 +26,7 @@ public class RefInt extends BaseRefField implements IRefIntField {
     public int get(Object receiver, int defValue) {
         try {
             setError(null);
-            return target.getInt(receiver);
+            return getTarget().getInt(receiver);
         } catch (Exception e) {
             setError(e);
             return defValue;
@@ -37,7 +37,7 @@ public class RefInt extends BaseRefField implements IRefIntField {
     public boolean set(Object receiver, int value) {
         try {
             setError(null);
-            target.setInt(receiver, value);
+            getTarget().setInt(receiver, value);
             return true;
         } catch (Exception e) {
             setError(e);

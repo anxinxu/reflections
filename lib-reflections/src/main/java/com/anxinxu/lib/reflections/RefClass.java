@@ -8,52 +8,52 @@ import java.lang.reflect.Modifier;
 
 public final class RefClass {
 
-    public static Class<?> load(Class<?> mappingClass, String targetClassName) {
+    public static Class<?> load(Class<?> mappingClass, String targetClassName, boolean lazyLoadTarget) {
         try {
-            return load(mappingClass, Class.forName(targetClassName), targetClassName, null);
+            return load(mappingClass, Class.forName(targetClassName), targetClassName, null, lazyLoadTarget);
         } catch (Exception e) {
-            return load(mappingClass, null, targetClassName, null);
+            return load(mappingClass, null, targetClassName, null, lazyLoadTarget);
         }
     }
 
-    public static Class<?> load(Class<?> mappingClass, Class<?> targetClass) {
+    public static Class<?> load(Class<?> mappingClass, Class<?> targetClass, boolean lazyLoadTarget) {
         if (targetClass == null) {
-            return load(mappingClass, null, "null", null);
+            return load(mappingClass, null, "null", null, lazyLoadTarget);
         }
-        return load(mappingClass, targetClass, targetClass.getName(), null);
+        return load(mappingClass, targetClass, targetClass.getName(), null, lazyLoadTarget);
     }
 
-    public static Class<?> load(Class<?> mappingClass, Object mappingObj, Class<?> targetClass) {
+    public static Class<?> load(Class<?> mappingClass, Object mappingObj, Class<?> targetClass, boolean lazyLoadTarget) {
         if (targetClass == null) {
-            return load(mappingClass, null, "null", mappingObj);
+            return load(mappingClass, null, "null", mappingObj, lazyLoadTarget);
         }
-        return load(mappingClass, targetClass, targetClass.getName(), mappingObj);
+        return load(mappingClass, targetClass, targetClass.getName(), mappingObj, lazyLoadTarget);
     }
 
-    public static Class<?> load(Class<?> mappingClass, Object mappingObj, String targetClassName) {
+    public static Class<?> load(Class<?> mappingClass, Object mappingObj, String targetClassName, boolean lazyLoadTarget) {
         try {
-            return load(mappingClass, Class.forName(targetClassName), targetClassName, mappingObj);
+            return load(mappingClass, Class.forName(targetClassName), targetClassName, mappingObj, lazyLoadTarget);
         } catch (Exception e) {
-            return load(mappingClass, null, targetClassName, mappingObj);
+            return load(mappingClass, null, targetClassName, mappingObj, lazyLoadTarget);
         }
     }
 
-    public static Class<?> load(Object mappingObj, Class<?> targetClass) {
+    public static Class<?> load(Object mappingObj, Class<?> targetClass, boolean lazyLoadTarget) {
         if (targetClass == null) {
-            return load(mappingObj.getClass(), null, "null", mappingObj);
+            return load(mappingObj.getClass(), null, "null", mappingObj, lazyLoadTarget);
         }
-        return load(mappingObj.getClass(), targetClass, targetClass.getName(), mappingObj);
+        return load(mappingObj.getClass(), targetClass, targetClass.getName(), mappingObj, lazyLoadTarget);
     }
 
-    public static Class<?> load(Object mappingObj, String targetClassName) {
+    public static Class<?> load(Object mappingObj, String targetClassName, boolean lazyLoadTarget) {
         try {
-            return load(mappingObj.getClass(), Class.forName(targetClassName), targetClassName, mappingObj);
+            return load(mappingObj.getClass(), Class.forName(targetClassName), targetClassName, mappingObj, lazyLoadTarget);
         } catch (Exception e) {
-            return load(mappingObj.getClass(), null, targetClassName, mappingObj);
+            return load(mappingObj.getClass(), null, targetClassName, mappingObj, lazyLoadTarget);
         }
     }
 
-    private static Class<?> load(Class<?> mappingClass, Class<?> targetClass, String targetClassName, Object mappingObj) {
+    private static Class<?> load(Class<?> mappingClass, Class<?> targetClass, String targetClassName, Object mappingObj, boolean lazyLoadTarget) {
         Field[] fields = mappingClass.getDeclaredFields();
         for (Field field : fields) {
             try {
@@ -62,7 +62,7 @@ public final class RefClass {
                     if (IRefType.class.isAssignableFrom(fieldType)) {
                         //noinspection unchecked
                         Class<? extends IRefType> type = (Class<? extends IRefType>) fieldType;
-                        IRefType obj = RefTypeFactory.create(type, targetClass, getTargetName(field), targetClassName, getParameterTypesByField(field));
+                        IRefType obj = RefTypeFactory.create(type, targetClass, getTargetName(field), targetClassName, getParameterTypesByField(field), lazyLoadTarget);
                         // for kotlin companion object or object
                         if (!field.isAccessible()) {
                             field.setAccessible(true);

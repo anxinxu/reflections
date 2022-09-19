@@ -8,8 +8,8 @@ public class RefStaticMethod<T> extends BaseRefStaticMethod<RefMethod<T>> implem
 
     public static final RefTypeFactory.Factory<RefStaticMethod<?>> CREATOR = new RefTypeFactory.Factory<RefStaticMethod<?>>() {
         @Override
-        public RefStaticMethod<?> create(Class<RefStaticMethod<?>> fieldType, Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params) {
-            return new RefStaticMethod<>(RefTypeFactory.create(RefMethod.class, targetClass, targetName, targetClassName, params));
+        public RefStaticMethod<?> create(Class<RefStaticMethod<?>> fieldType, Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params, boolean lazyLoadTarget) {
+            return new RefStaticMethod<>(RefTypeFactory.create(RefMethod.class, targetClass, targetName, targetClassName, params, lazyLoadTarget));
         }
     };
 

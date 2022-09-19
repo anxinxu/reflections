@@ -9,8 +9,8 @@ public class RefStaticChar extends BaseRefStaticField<RefChar> implements IRefCh
 
     public static final RefTypeFactory.Factory<RefStaticChar> CREATOR = new RefTypeFactory.Factory<RefStaticChar>() {
         @Override
-        public RefStaticChar create(Class<RefStaticChar> fieldType, Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params) {
-            return new RefStaticChar(RefTypeFactory.create(RefChar.class, targetClass, targetName, targetClassName, params));
+        public RefStaticChar create(Class<RefStaticChar> fieldType, Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params, boolean lazyLoadTarget) {
+            return new RefStaticChar(RefTypeFactory.create(RefChar.class, targetClass, targetName, targetClassName, params, lazyLoadTarget));
         }
     };
 

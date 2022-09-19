@@ -8,13 +8,13 @@ public class RefShort extends BaseRefField implements IRefShortField {
 
     public static final RefTypeFactory.Factory<RefShort> CREATOR = new RefTypeFactory.Factory<RefShort>() {
         @Override
-        public RefShort create(Class<RefShort> fieldType, Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params) {
-            return new RefShort(targetClass, targetName, targetClassName, params);
+        public RefShort create(Class<RefShort> fieldType, Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params, boolean lazyLoadTarget) {
+            return new RefShort(targetClass, targetName, targetClassName, params, lazyLoadTarget);
         }
     };
 
-    public RefShort(Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params) {
-        super(targetClass, targetName, targetClassName, params);
+    public RefShort(Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params, boolean lazyLoadTarget) {
+        super(targetClass, targetName, targetClassName, params, lazyLoadTarget);
     }
 
     @Override
@@ -26,7 +26,7 @@ public class RefShort extends BaseRefField implements IRefShortField {
     public short get(Object receiver, short defValue) {
         try {
             setError(null);
-            return target.getShort(receiver);
+            return getTarget().getShort(receiver);
         } catch (Exception e) {
             setError(e);
             return defValue;
@@ -37,7 +37,7 @@ public class RefShort extends BaseRefField implements IRefShortField {
     public boolean set(Object receiver, short value) {
         try {
             setError(null);
-            target.setShort(receiver, value);
+            getTarget().setShort(receiver, value);
             return true;
         } catch (Exception e) {
             setError(e);

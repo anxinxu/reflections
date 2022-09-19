@@ -18,7 +18,7 @@ import com.anxinxu.reflections.test.TestJava
 class TestJavaRefKts {
 
     companion object {
-        val TYPE = RefClass.load(TestJavaRefKts::class.java, this, TestJava::class.java)
+        val TYPE = RefClass.load(TestJavaRefKts::class.java, this, TestJava::class.java, true)
 
         fun a() {
         }

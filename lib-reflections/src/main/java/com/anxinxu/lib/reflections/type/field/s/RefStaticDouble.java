@@ -9,8 +9,8 @@ public class RefStaticDouble extends BaseRefStaticField<RefDouble> implements IR
 
     public static final RefTypeFactory.Factory<RefStaticDouble> CREATOR = new RefTypeFactory.Factory<RefStaticDouble>() {
         @Override
-        public RefStaticDouble create(Class<RefStaticDouble> fieldType, Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params) {
-            return new RefStaticDouble(RefTypeFactory.create(RefDouble.class, targetClass, targetName, targetClassName, params));
+        public RefStaticDouble create(Class<RefStaticDouble> fieldType, Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params, boolean lazyLoadTarget) {
+            return new RefStaticDouble(RefTypeFactory.create(RefDouble.class, targetClass, targetName, targetClassName, params, lazyLoadTarget));
         }
     };
 

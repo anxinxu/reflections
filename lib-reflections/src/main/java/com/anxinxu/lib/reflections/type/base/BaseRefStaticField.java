@@ -26,7 +26,7 @@ public class BaseRefStaticField<T extends BaseRefField> implements IRefType {
     }
 
     public Field field() {
-        return targetProxy.target;
+        return targetProxy.getTarget();
     }
 
     public String fieldName() {
@@ -35,5 +35,9 @@ public class BaseRefStaticField<T extends BaseRefField> implements IRefType {
 
     public Class<?> targetClass() {
         return targetProxy.targetClass();
+    }
+
+    public boolean isSucceed() {
+        return targetProxy.getError() == null;
     }
 }

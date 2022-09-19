@@ -9,8 +9,8 @@ public class RefStaticBoolean extends BaseRefStaticField<RefBoolean> implements 
 
     public static final RefTypeFactory.Factory<RefStaticBoolean> CREATOR = new RefTypeFactory.Factory<RefStaticBoolean>() {
         @Override
-        public RefStaticBoolean create(Class<RefStaticBoolean> fieldType, Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params) {
-            return new RefStaticBoolean(RefTypeFactory.create(RefBoolean.class, targetClass, targetName, targetClassName, params));
+        public RefStaticBoolean create(Class<RefStaticBoolean> fieldType, Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params, boolean lazyLoadTarget) {
+            return new RefStaticBoolean(RefTypeFactory.create(RefBoolean.class, targetClass, targetName, targetClassName, params, lazyLoadTarget));
         }
     };
 

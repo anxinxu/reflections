@@ -17,3 +17,4 @@ rootProject.name = "Reflections"
 include ':app'
 include ':lib-reflections'
 include ':lib-reflections-ktx'
+include ':lib-reflections-andorid'

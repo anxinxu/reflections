@@ -9,8 +9,8 @@ public class RefStaticFloat extends BaseRefStaticField<RefFloat> implements IRef
 
     public static final RefTypeFactory.Factory<RefStaticFloat> CREATOR = new RefTypeFactory.Factory<RefStaticFloat>() {
         @Override
-        public RefStaticFloat create(Class<RefStaticFloat> fieldType, Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params) {
-            return new RefStaticFloat(RefTypeFactory.create(RefFloat.class, targetClass, targetName, targetClassName, params));
+        public RefStaticFloat create(Class<RefStaticFloat> fieldType, Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params, boolean lazyLoadTarget) {
+            return new RefStaticFloat(RefTypeFactory.create(RefFloat.class, targetClass, targetName, targetClassName, params, lazyLoadTarget));
         }
     };
 

@@ -1,23 +1,26 @@
 package com.anxinxu.reflections
 
+import android.content.Context
 import android.os.Bundle
+import android.os.IInterface
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.webkit.WebView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.WindowCompat
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
-import com.anxinxu.reflections.mirror.com.anxinxu.reflections.test.MyClass
-import com.anxinxu.reflections.mirror.com.anxinxu.reflections.test.Test
+import com.anxinxu.lib.reflection.android.ActivityThreadReflection
+import com.anxinxu.lib.reflection.android.ServiceManagerReflection
+import com.anxinxu.lib.reflection.android.VMRuntimeReflection
 import com.anxinxu.reflections.databinding.ActivityMainBinding
-import com.anxinxu.reflections.mirror.com.anxinxu.reflections.test.TestJavaRef
-import com.anxinxu.reflections.mirror.com.anxinxu.reflections.test.TestJavaRefKts
-import com.anxinxu.reflections.mirror.com.anxinxu.reflections.test.TestJavaRefObjectKts
+import com.anxinxu.reflections.mirror.com.anxinxu.reflections.test.*
 import com.anxinxu.reflections.test.TestJava
 import com.google.android.material.snackbar.Snackbar
+import java.lang.reflect.Method
 
 class MainActivity : AppCompatActivity() {
 
@@ -83,6 +86,92 @@ class MainActivity : AppCompatActivity() {
             "====================================== Test.testObject()========================================"
         )
         Test.testObject()
+
+        Log.e(
+            "anxintag",
+            "====================================== VMRuntime ========================================"
+        )
+
+        Log.e("anxintag", "TYPE:${VMRuntimeReflection.TYPE}")
+        val vmRuntime = VMRuntimeReflection.getRuntime.invoke()
+        Log.e("anxintag", "vmRuntime:$vmRuntime")
+        Log.e("anxintag", "bootClassPath:${VMRuntimeReflection.bootClassPath(vmRuntime)}")
+        Log.e("anxintag", "classPath:${VMRuntimeReflection.classPath(vmRuntime)}")
+        Log.e("anxintag", "vmVersion:${VMRuntimeReflection.vmVersion(vmRuntime)}")
+        Log.e("anxintag", "vmLibrary:${VMRuntimeReflection.vmLibrary(vmRuntime)}")
+        Log.e("anxintag", "vmInstructionSet:${VMRuntimeReflection.vmInstructionSet(vmRuntime)}")
+        Log.e("anxintag", "is64Bit:${VMRuntimeReflection.is64Bit(vmRuntime)}")
+        Log.e("anxintag", "getTargetSdkVersion:${VMRuntimeReflection.getTargetSdkVersion(vmRuntime)}")
+        Log.e("anxintag", "setHiddenApiExemptions:${VMRuntimeReflection.setHiddenApiExemptions.target}")
+
+        Log.e(
+            "anxintag",
+            "====================================== ActivityThread ========================================"
+        )
+
+        Log.e("anxintag", "TYPE:${ActivityThreadReflection.TYPE}")
+        val activityThread = ActivityThreadReflection.currentActivityThread.invoke()
+        Log.e("anxintag", "activityThread:$activityThread")
+        Log.e("anxintag", "currentPackageName:${ActivityThreadReflection.currentPackageName.invoke()}")
+        Log.e("anxintag", "currentProcessName:${ActivityThreadReflection.currentProcessName.invoke()}")
+        Log.e("anxintag", "currentApplication:${ActivityThreadReflection.currentApplication.invoke()}")
+        Log.e("anxintag", "getPackageManager:${ActivityThreadReflection.getPackageManager.invoke()}")
+        Log.e("anxintag", "mH:${ActivityThreadReflection.mH.get(activityThread)}")
+        Log.e("anxintag", "mAppThread:${ActivityThreadReflection.mAppThread.get(activityThread)}")
+        Log.e("anxintag", "mActivities:${ActivityThreadReflection.mActivities.get(activityThread)}")
+        Log.e("anxintag", "mServices:${ActivityThreadReflection.mServices.get(activityThread)}")
+        Log.e("anxintag", "mLocalProviders:${ActivityThreadReflection.mLocalProviders.get(activityThread)}")
+
+        Log.e(
+            "anxintag",
+            "====================================== ServiceManager ========================================"
+        )
+
+        Log.e("anxintag", "TYPE:${ServiceManagerReflection.TYPE}")
+        Log.e("anxintag", "sServiceManager:${ServiceManagerReflection.sServiceManager.get()}")
+        Log.e("anxintag", "getIServiceManager:${ServiceManagerReflection.getIServiceManager.invoke()}")
+        Log.e("anxintag", "sCache:${ServiceManagerReflection.sCache.get()}")
+        Log.e(
+            "anxintag",
+            "getService(${Context.ACTIVITY_SERVICE}):${ServiceManagerReflection.getService.invoke(Context.ACTIVITY_SERVICE)}"
+        )
+
+        Log.e(
+            "anxintag",
+            "====================================== hookBinder ========================================"
+        )
+        ServiceManagerReflection.hookBinder(
+            "webviewupdate",
+            "android.webkit.IWebViewUpdateService",
+            object : ServiceManagerReflection.ServiceCall {
+
+                override fun beforeCall(originService: IInterface, method: Method, args: Array<out Any>?): Boolean {
+                    super.beforeCall(originService, method, args)
+                    return method.name == "waitForAndGetProvider"
+                }
+
+                override fun afterCall(
+                    originService: IInterface,
+                    method: Method,
+                    args: Array<Any>?,
+                    originReturn: Any?
+                ): ServiceManagerReflection.ServiceCall.Result {
+                    return if (method.name == "waitForAndGetProvider") {
+                        Log.d("anxintag", "MainActivity args:$args")
+                        super.afterCall(originService, method, args, originReturn)
+                        val packageInfo = WebViewProviderResponseReflection.packageInfo.get(originReturn)
+                        val status = WebViewProviderResponseReflection.status.get(originReturn)
+                        Log.e("anxintag", "originReturn:$originReturn, status:$status, packageInfo:$packageInfo")
+                        ServiceManagerReflection.ServiceCall.Result(
+                            true, WebViewProviderResponseReflection.constructor.newInstance(packageInfo, status)
+                        )
+                    } else {
+                        super.afterCall(originService, method, args, originReturn)
+                    }
+                }
+            })
+
+        WebView(this)
     }
 
     private fun testJava() {

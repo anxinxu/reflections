@@ -8,13 +8,13 @@ public class RefLong extends BaseRefField implements IRefLongField {
 
     public static final RefTypeFactory.Factory<RefLong> CREATOR = new RefTypeFactory.Factory<RefLong>() {
         @Override
-        public RefLong create(Class<RefLong> fieldType, Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params) {
-            return new RefLong(targetClass, targetName, targetClassName, params);
+        public RefLong create(Class<RefLong> fieldType, Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params, boolean lazyLoadTarget) {
+            return new RefLong(targetClass, targetName, targetClassName, params, lazyLoadTarget);
         }
     };
 
-    public RefLong(Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params) {
-        super(targetClass, targetName, targetClassName, params);
+    public RefLong(Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params, boolean lazyLoadTarget) {
+        super(targetClass, targetName, targetClassName, params, lazyLoadTarget);
     }
 
     @Override
@@ -26,7 +26,7 @@ public class RefLong extends BaseRefField implements IRefLongField {
     public long get(Object receiver, long defValue) {
         try {
             setError(null);
-            return target.getLong(receiver);
+            return getTarget().getLong(receiver);
         } catch (Exception e) {
             setError(e);
             return defValue;
@@ -37,7 +37,7 @@ public class RefLong extends BaseRefField implements IRefLongField {
     public boolean set(Object receiver, long value) {
         try {
             setError(null);
-            target.setLong(receiver, value);
+            getTarget().setLong(receiver, value);
             return true;
         } catch (Exception e) {
             setError(e);

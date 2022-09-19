@@ -7,8 +7,8 @@ import java.lang.reflect.Method;
 public class BaseRefMethod extends BaseRef<Method> {
 
 
-    public BaseRefMethod(Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params) {
-        super(targetClass, targetName, targetClassName, params);
+    public BaseRefMethod(Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params, boolean lazyLoadTarget) {
+        super(targetClass, targetName, targetClassName, params, lazyLoadTarget);
     }
 
     @Override
@@ -27,11 +27,11 @@ public class BaseRefMethod extends BaseRef<Method> {
     }
 
     public Method method() {
-        return target;
+        return getTarget();
     }
 
     public Class<?> returnType() {
-        return target != null ? target.getReturnType() : null;
+        return getTarget() != null ? getTarget().getReturnType() : null;
     }
 
     public Class<?>[] params() {

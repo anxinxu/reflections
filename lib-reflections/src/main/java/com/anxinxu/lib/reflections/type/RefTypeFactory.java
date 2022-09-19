@@ -60,12 +60,12 @@ public class RefTypeFactory {
         REF_TYPES.put(clz, factory);
     }
 
-    public static <T extends IRefType> T create(Class<T> fieldType, Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params) {
+    public static <T extends IRefType> T create(Class<T> fieldType, Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params, boolean lazyLoadTarget) {
         //noinspection unchecked
         Factory<T> f = (Factory<T>) REF_TYPES.get(fieldType);
         T res = null;
         if (f != null) {
-            res = f.create(fieldType, targetClass, targetName, targetClassName, params);
+            res = f.create(fieldType, targetClass, targetName, targetClassName, params, lazyLoadTarget);
         }
         if (res == null) {
             // error
@@ -75,6 +75,6 @@ public class RefTypeFactory {
     }
 
     public interface Factory<T extends IRefType> {
-        T create(Class<T> fieldType, Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params);
+        T create(Class<T> fieldType, Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params, boolean lazyLoadTarget);
     }
 }

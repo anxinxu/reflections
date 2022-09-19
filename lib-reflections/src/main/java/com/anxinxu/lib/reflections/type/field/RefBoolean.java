@@ -8,13 +8,13 @@ public class RefBoolean extends BaseRefField implements IRefBooleanField {
 
     public static final RefTypeFactory.Factory<RefBoolean> CREATOR = new RefTypeFactory.Factory<RefBoolean>() {
         @Override
-        public RefBoolean create(Class<RefBoolean> fieldType, Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params) {
-            return new RefBoolean(targetClass, targetName, targetClassName, params);
+        public RefBoolean create(Class<RefBoolean> fieldType, Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params, boolean lazyLoadTarget) {
+            return new RefBoolean(targetClass, targetName, targetClassName, params, lazyLoadTarget);
         }
     };
 
-    public RefBoolean(Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params) {
-        super(targetClass, targetName, targetClassName, params);
+    public RefBoolean(Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params, boolean lazyLoadTarget) {
+        super(targetClass, targetName, targetClassName, params, lazyLoadTarget);
     }
 
     @Override
@@ -26,7 +26,7 @@ public class RefBoolean extends BaseRefField implements IRefBooleanField {
     public boolean get(Object receiver, boolean defValue) {
         try {
             setError(null);
-            return target.getBoolean(receiver);
+            return getTarget().getBoolean(receiver);
         } catch (Exception e) {
             setError(e);
             return defValue;
@@ -37,7 +37,7 @@ public class RefBoolean extends BaseRefField implements IRefBooleanField {
     public boolean set(Object receiver, boolean value) {
         try {
             setError(null);
-            target.setBoolean(receiver, value);
+            getTarget().setBoolean(receiver, value);
             return true;
         } catch (Exception e) {
             setError(e);

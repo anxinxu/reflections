@@ -1,6 +1,6 @@
 package com.anxinxu.reflections.mirror.com.anxinxu.reflections.test
 
-import com.anxinxu.lib.reflections.ReflectScope
+import com.anxinxu.lib.reflections.IReflectScope
 import com.anxinxu.lib.reflections.injectField
 import com.anxinxu.lib.reflections.injectMethod
 import com.anxinxu.lib.reflections.type.constructor.RefConstructor
@@ -13,11 +13,11 @@ private fun log(msg: String?) {
     println("anxintag log  $msg")
 }
 
-class MyClass : ReflectScope {
+class MyClass : IReflectScope {
 
     override val type: Class<*> by lazy { com.anxinxu.reflections.test.TestJavaClass::class.java }
 
-    companion object : ReflectScope {
+    companion object : IReflectScope {
         override val type: Class<*> by lazy { com.anxinxu.reflections.test.TestJavaClass::class.java }
         val abc: RefStaticObject<String?> by injectField()
         val objAbc: RefObject<String> by injectField()
@@ -85,7 +85,7 @@ class MyClass : ReflectScope {
 
 }
 
-object Test : ReflectScope {
+object Test : IReflectScope {
     override val type: Class<*> by lazy { com.anxinxu.reflections.test.TestJavaClass::class.java }
 
     val abc: RefStaticObject<String?> by injectField()

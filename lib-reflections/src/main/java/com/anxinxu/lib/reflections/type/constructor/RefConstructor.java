@@ -11,13 +11,13 @@ public class RefConstructor<T> extends BaseRef<Constructor<T>> implements IRefCo
 
     public static final RefTypeFactory.Factory<RefConstructor<?>> CREATOR = new RefTypeFactory.Factory<RefConstructor<?>>() {
         @Override
-        public RefConstructor<?> create(Class<RefConstructor<?>> fieldType, Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params) {
-            return new RefConstructor<>(targetClass, targetName, targetClassName, params);
+        public RefConstructor<?> create(Class<RefConstructor<?>> fieldType, Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params, boolean lazyLoadTarget) {
+            return new RefConstructor<>(targetClass, targetName, targetClassName, params, lazyLoadTarget);
         }
     };
 
-    public RefConstructor(Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params) {
-        super(targetClass, targetName, targetClassName, params);
+    public RefConstructor(Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params, boolean lazyLoadTarget) {
+        super(targetClass, targetName, targetClassName, params, lazyLoadTarget);
     }
 
     @Override
@@ -38,17 +38,17 @@ public class RefConstructor<T> extends BaseRef<Constructor<T>> implements IRefCo
 
     @Override
     public T newInstance(Object... params) {
-        return newInstance(null, params);
+        return newInstanceOrDefault(null, params);
     }
 
     @Override
-    public T newInstance(T defValue, Object... params) {
+    public T newInstanceOrDefault(T defValue, Object... params) {
         try {
             setError(null);
             if (params == null || params.length == 0) {
-                return target.newInstance();
+                return getTarget().newInstance();
             }
-            return target.newInstance(params);
+            return getTarget().newInstance(params);
         } catch (Exception e) {
             setError(e);
             return defValue;
@@ -56,7 +56,7 @@ public class RefConstructor<T> extends BaseRef<Constructor<T>> implements IRefCo
     }
 
     public Constructor<T> constructor() {
-        return target;
+        return getTarget();
     }
 
     public Class<?>[] params() {

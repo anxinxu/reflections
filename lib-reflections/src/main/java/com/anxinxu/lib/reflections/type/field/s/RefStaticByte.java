@@ -9,8 +9,8 @@ public class RefStaticByte extends BaseRefStaticField<RefByte> implements IRefBy
 
     public static final RefTypeFactory.Factory<RefStaticByte> CREATOR = new RefTypeFactory.Factory<RefStaticByte>() {
         @Override
-        public RefStaticByte create(Class<RefStaticByte> fieldType, Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params) {
-            return new RefStaticByte(RefTypeFactory.create(RefByte.class, targetClass, targetName, targetClassName, params));
+        public RefStaticByte create(Class<RefStaticByte> fieldType, Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params, boolean lazyLoadTarget) {
+            return new RefStaticByte(RefTypeFactory.create(RefByte.class, targetClass, targetName, targetClassName, params, lazyLoadTarget));
         }
     };
 

@@ -7,8 +7,8 @@ import java.lang.reflect.Field;
 public abstract class BaseRefField extends BaseRef<Field> {
 
 
-    public BaseRefField(Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params) {
-        super(targetClass, targetName, targetClassName, params);
+    public BaseRefField(Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params, boolean lazyLoadTarget) {
+        super(targetClass, targetName, targetClassName, params, lazyLoadTarget);
     }
 
     @Override
@@ -17,11 +17,11 @@ public abstract class BaseRefField extends BaseRef<Field> {
     }
 
     public Class<?> fieldType() {
-        return target != null ? target.getType() : null;
+        return getTarget() != null ? getTarget().getType() : null;
     }
 
     public Field field() {
-        return target;
+        return getTarget();
     }
 
     public String fieldName() {

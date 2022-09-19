@@ -18,7 +18,7 @@ import com.anxinxu.reflections.test.TestJava;
 
 public class TestJavaRef {
 
-    public static Class<?> TYPE = RefClass.load(TestJavaRef.class, com.anxinxu.reflections.test.TestJava.class);
+    public static Class<?> TYPE = RefClass.load(TestJavaRef.class, com.anxinxu.reflections.test.TestJava.class, true);
 
     @ReflectionName("sCurrentActivity")
     public static RefStaticObject<Object> a;

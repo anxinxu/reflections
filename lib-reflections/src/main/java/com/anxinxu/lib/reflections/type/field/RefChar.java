@@ -8,13 +8,13 @@ public class RefChar extends BaseRefField implements IRefCharField {
 
     public static final RefTypeFactory.Factory<RefChar> CREATOR = new RefTypeFactory.Factory<RefChar>() {
         @Override
-        public RefChar create(Class<RefChar> fieldType, Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params) {
-            return new RefChar(targetClass, targetName, targetClassName, params);
+        public RefChar create(Class<RefChar> fieldType, Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params, boolean lazyLoadTarget) {
+            return new RefChar(targetClass, targetName, targetClassName, params, lazyLoadTarget);
         }
     };
 
-    public RefChar(Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params) {
-        super(targetClass, targetName, targetClassName, params);
+    public RefChar(Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params, boolean lazyLoadTarget) {
+        super(targetClass, targetName, targetClassName, params, lazyLoadTarget);
     }
 
     @Override
@@ -26,7 +26,7 @@ public class RefChar extends BaseRefField implements IRefCharField {
     public char get(Object receiver, char defValue) {
         try {
             setError(null);
-            return target.getChar(receiver);
+            return getTarget().getChar(receiver);
         } catch (Exception e) {
             setError(e);
             return defValue;
@@ -37,7 +37,7 @@ public class RefChar extends BaseRefField implements IRefCharField {
     public boolean set(Object receiver, char value) {
         try {
             setError(null);
-            target.setChar(receiver, value);
+            getTarget().setChar(receiver, value);
             return true;
         } catch (Exception e) {
             setError(e);

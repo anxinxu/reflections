@@ -8,13 +8,13 @@ public class RefMethod<T> extends BaseRefMethod implements IRefMethod<T> {
 
     public static final RefTypeFactory.Factory<RefMethod<?>> CREATOR = new RefTypeFactory.Factory<RefMethod<?>>() {
         @Override
-        public RefMethod<?> create(Class<RefMethod<?>> fieldType, Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params) {
-            return new RefMethod<>(targetClass, targetName, targetClassName, params);
+        public RefMethod<?> create(Class<RefMethod<?>> fieldType, Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params, boolean lazyLoadTarget) {
+            return new RefMethod<>(targetClass, targetName, targetClassName, params, lazyLoadTarget);
         }
     };
 
-    public RefMethod(Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params) {
-        super(targetClass, targetName, targetClassName, params);
+    public RefMethod(Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params, boolean lazyLoadTarget) {
+        super(targetClass, targetName, targetClassName, params, lazyLoadTarget);
     }
 
     @Override
@@ -27,7 +27,7 @@ public class RefMethod<T> extends BaseRefMethod implements IRefMethod<T> {
         try {
             setError(null);
             //noinspection unchecked
-            return (T) target.invoke(receiver, args);
+            return (T) getTarget().invoke(receiver, args);
         } catch (Throwable throwable) {
             setError(throwable);
             return defValue;
@@ -35,7 +35,7 @@ public class RefMethod<T> extends BaseRefMethod implements IRefMethod<T> {
     }
 
     public Class<?>[] getParameterTypes() {
-        if (target == null) return null;
-        return target.getParameterTypes();
+        if (getTarget() == null) return null;
+        return getTarget().getParameterTypes();
     }
 }

@@ -3,6 +3,7 @@
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel target="1.7">
       <module name="Reflections.app" target="11" />
+      <module name="Reflections.lib-reflections-andorid" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>

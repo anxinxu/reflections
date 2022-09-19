@@ -8,13 +8,13 @@ public class RefDouble extends BaseRefField implements IRefDoubleField {
 
     public static final RefTypeFactory.Factory<RefDouble> CREATOR = new RefTypeFactory.Factory<RefDouble>() {
         @Override
-        public RefDouble create(Class<RefDouble> fieldType, Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params) {
-            return new RefDouble(targetClass, targetName, targetClassName, params);
+        public RefDouble create(Class<RefDouble> fieldType, Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params, boolean lazyLoadTarget) {
+            return new RefDouble(targetClass, targetName, targetClassName, params, lazyLoadTarget);
         }
     };
 
-    public RefDouble(Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params) {
-        super(targetClass, targetName, targetClassName, params);
+    public RefDouble(Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params, boolean lazyLoadTarget) {
+        super(targetClass, targetName, targetClassName, params, lazyLoadTarget);
     }
 
     @Override
@@ -26,7 +26,7 @@ public class RefDouble extends BaseRefField implements IRefDoubleField {
     public double get(Object receiver, double defValue) {
         try {
             setError(null);
-            return target.getDouble(receiver);
+            return getTarget().getDouble(receiver);
         } catch (Exception e) {
             setError(e);
             return defValue;
@@ -37,7 +37,7 @@ public class RefDouble extends BaseRefField implements IRefDoubleField {
     public boolean set(Object receiver, double value) {
         try {
             setError(null);
-            target.setDouble(receiver, value);
+            getTarget().setDouble(receiver, value);
             return true;
         } catch (Exception e) {
             setError(e);

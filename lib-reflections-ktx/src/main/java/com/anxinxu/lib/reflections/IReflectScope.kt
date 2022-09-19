@@ -5,35 +5,41 @@ import com.anxinxu.lib.reflections.type.base.api.IRefType
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
-interface ReflectScope {
+interface IReflectScope {
 
     val type: Class<*>
 
 }
 
-inline fun <reified T : IRefType> ReflectScope.injectField(targetName: String? = null): RefFieldLoader<T> {
-    return RefFieldLoader(T::class.java, this, targetName, null)
+inline fun <reified T : IRefType> IReflectScope.injectField(
+    targetName: String? = null,
+    lazyLoadTarget: Boolean = false
+): RefFieldLoader<T> {
+    return RefFieldLoader(T::class.java, this, targetName, null, lazyLoadTarget)
 }
 
-inline fun <reified T : IRefType> ReflectScope.injectMethod(
+inline fun <reified T : IRefType> IReflectScope.injectMethod(
     targetName: String? = null,
-    params: Array<String>? = null
+    params: Array<String>? = null,
+    lazyLoadTarget: Boolean = false
 ): RefFieldLoader<T> {
-    return RefFieldLoader(T::class.java, this, targetName, ReflectUtil.toClasses(params))
+    return RefFieldLoader(T::class.java, this, targetName, ReflectUtil.toClasses(params), lazyLoadTarget)
 }
 
-inline fun <reified T : IRefType> ReflectScope.injectMethod(
+inline fun <reified T : IRefType> IReflectScope.injectMethod(
     targetName: String? = null,
-    params: Array<Class<*>>
+    params: Array<Class<*>>,
+    lazyLoadTarget: Boolean = false
 ): RefFieldLoader<T> {
-    return RefFieldLoader(T::class.java, this, targetName, params)
+    return RefFieldLoader(T::class.java, this, targetName, params, lazyLoadTarget)
 }
 
 class RefFieldLoader<T : IRefType>(
     private val clazz: Class<T>,
-    private val scope: ReflectScope,
+    private val scope: IReflectScope,
     private val targetName: String?,
-    private val params: Array<Class<*>>?
+    private val params: Array<Class<*>>?,
+    private val lazyLoadTarget: Boolean,
 ) {
     private lateinit var prop: ReadOnlyProperty<Any, T>
 
@@ -51,13 +57,14 @@ class RefFieldLoader<T : IRefType>(
         return prop
     }
 
-    private fun createType(clazz: Class<T>, property: KProperty<*>, scope: ReflectScope): T {
+    private fun createType(clazz: Class<T>, property: KProperty<*>, scope: IReflectScope): T {
         return RefTypeFactory.create(
             clazz,
             scope.type,
             targetName ?: property.name,
             scope.type.name,
-            params
+            params,
+            lazyLoadTarget
         )
     }
 }

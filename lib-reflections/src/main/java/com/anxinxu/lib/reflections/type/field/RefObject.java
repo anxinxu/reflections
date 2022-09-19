@@ -8,13 +8,13 @@ public class RefObject<T> extends BaseRefField implements IRefObjectField<T> {
 
     public static final RefTypeFactory.Factory<RefObject<?>> CREATOR = new RefTypeFactory.Factory<RefObject<?>>() {
         @Override
-        public RefObject<?> create(Class<RefObject<?>> fieldType, Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params) {
-            return new RefObject<>(targetClass, targetName, targetClassName, params);
+        public RefObject<?> create(Class<RefObject<?>> fieldType, Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params, boolean lazyLoadTarget) {
+            return new RefObject<>(targetClass, targetName, targetClassName, params, lazyLoadTarget);
         }
     };
 
-    public RefObject(Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params) {
-        super(targetClass, targetName, targetClassName, params);
+    public RefObject(Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params, boolean lazyLoadTarget) {
+        super(targetClass, targetName, targetClassName, params, lazyLoadTarget);
     }
 
     @Override
@@ -27,7 +27,7 @@ public class RefObject<T> extends BaseRefField implements IRefObjectField<T> {
         try {
             setError(null);
             //noinspection unchecked
-            return (T) target.get(receiver);
+            return (T) getTarget().get(receiver);
         } catch (Exception e) {
             setError(e);
             return defValue;
@@ -38,7 +38,7 @@ public class RefObject<T> extends BaseRefField implements IRefObjectField<T> {
     public boolean set(Object receiver, T value) {
         try {
             setError(null);
-            target.set(receiver, value);
+            getTarget().set(receiver, value);
             return true;
         } catch (Exception e) {
             setError(e);

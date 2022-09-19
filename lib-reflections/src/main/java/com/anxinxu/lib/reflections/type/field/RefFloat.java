@@ -8,13 +8,13 @@ public class RefFloat extends BaseRefField implements IRefFloatField {
 
     public static final RefTypeFactory.Factory<RefFloat> CREATOR = new RefTypeFactory.Factory<RefFloat>() {
         @Override
-        public RefFloat create(Class<RefFloat> fieldType, Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params) {
-            return new RefFloat(targetClass, targetName, targetClassName, params);
+        public RefFloat create(Class<RefFloat> fieldType, Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params, boolean lazyLoadTarget) {
+            return new RefFloat(targetClass, targetName, targetClassName, params, lazyLoadTarget);
         }
     };
 
-    public RefFloat(Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params) {
-        super(targetClass, targetName, targetClassName, params);
+    public RefFloat(Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params, boolean lazyLoadTarget) {
+        super(targetClass, targetName, targetClassName, params, lazyLoadTarget);
     }
 
     @Override
@@ -26,7 +26,7 @@ public class RefFloat extends BaseRefField implements IRefFloatField {
     public float get(Object receiver, float defValue) {
         try {
             setError(null);
-            return target.getFloat(receiver);
+            return getTarget().getFloat(receiver);
         } catch (Exception e) {
             setError(e);
             return defValue;
@@ -37,7 +37,7 @@ public class RefFloat extends BaseRefField implements IRefFloatField {
     public boolean set(Object receiver, float value) {
         try {
             setError(null);
-            target.setFloat(receiver, value);
+            getTarget().setFloat(receiver, value);
             return true;
         } catch (Exception e) {
             setError(e);

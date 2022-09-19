@@ -9,8 +9,8 @@ public class RefStaticShort extends BaseRefStaticField<RefShort> implements IRef
 
     public static final RefTypeFactory.Factory<RefStaticShort> CREATOR = new RefTypeFactory.Factory<RefStaticShort>() {
         @Override
-        public RefStaticShort create(Class<RefStaticShort> fieldType, Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params) {
-            return new RefStaticShort(RefTypeFactory.create(RefShort.class, targetClass, targetName, targetClassName, params));
+        public RefStaticShort create(Class<RefStaticShort> fieldType, Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params, boolean lazyLoadTarget) {
+            return new RefStaticShort(RefTypeFactory.create(RefShort.class, targetClass, targetName, targetClassName, params, lazyLoadTarget));
         }
     };
 

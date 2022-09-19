@@ -11,8 +11,8 @@ public class RefStaticObject<T> extends BaseRefStaticField<RefObject<T>> impleme
 
     public static final RefTypeFactory.Factory<RefStaticObject<?>> CREATOR = new RefTypeFactory.Factory<RefStaticObject<?>>() {
         @Override
-        public RefStaticObject<?> create(Class<RefStaticObject<?>> fieldType, Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params) {
-            return new RefStaticObject<>(RefTypeFactory.create(RefObject.class, targetClass, targetName, targetClassName, params));
+        public RefStaticObject<?> create(Class<RefStaticObject<?>> fieldType, Class<?> targetClass, String targetName, String targetClassName, Class<?>[] params, boolean lazyLoadTarget) {
+            return new RefStaticObject<>(RefTypeFactory.create(RefObject.class, targetClass, targetName, targetClassName, params, lazyLoadTarget));
         }
     };
 
