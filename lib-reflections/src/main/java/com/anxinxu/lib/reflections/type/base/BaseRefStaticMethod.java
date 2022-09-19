@@ -41,6 +41,10 @@ public class BaseRefStaticMethod<T extends BaseRefMethod> implements IRefType {
     }
 
     public boolean isSucceed() {
-        return targetProxy.getError() == null;
+        return targetProxy.isSucceed();
+    }
+
+    public boolean isReflectSucceed() {
+        return targetProxy.isReflectSucceed();
     }
 }

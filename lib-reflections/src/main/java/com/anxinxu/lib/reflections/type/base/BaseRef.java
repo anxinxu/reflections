@@ -28,24 +28,27 @@ abstract public class BaseRef<T> implements IRefType {
         if (isLoadTarget) {
             return;
         }
-        if (targetClass == null) {
-            target = null;
-            error = new ClassNotFoundException("not found class for " + targetClassName);
-        } else {
-            target = getTarget(targetName);
-            if (target == null) {
-                error = new FileNotFoundException("not fount target for " + targetName);
+        synchronized (this) {
+            if (isLoadTarget) {
+                return;
             }
+            if (targetClass == null) {
+                target = null;
+                error = new ClassNotFoundException("not found class for " + targetClassName);
+            } else {
+                target = getTarget(targetName);
+                if (target == null) {
+                    error = new FileNotFoundException("not fount target for " + targetName);
+                }
+            }
+            isLoadTarget = true;
         }
-        isLoadTarget = true;
     }
 
     abstract protected T getTarget(String name);
 
     public Throwable getError() {
-        if (!isLoadTarget) {
-            setupTarget();
-        }
+        setupTarget();
         return error;
     }
 
@@ -54,10 +57,12 @@ abstract public class BaseRef<T> implements IRefType {
     }
 
     public boolean isSucceed() {
-        if (!isLoadTarget) {
-            setupTarget();
-        }
+        setupTarget();
         return error == null;
+    }
+
+    public boolean isReflectSucceed() {
+        return getTarget() != null;
     }
 
     public T getTarget() {

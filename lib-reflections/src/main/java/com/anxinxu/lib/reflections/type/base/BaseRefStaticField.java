@@ -38,6 +38,10 @@ public class BaseRefStaticField<T extends BaseRefField> implements IRefType {
     }
 
     public boolean isSucceed() {
-        return targetProxy.getError() == null;
+        return targetProxy.isSucceed();
+    }
+
+    public boolean isReflectSucceed() {
+        return targetProxy.isReflectSucceed();
     }
 }
