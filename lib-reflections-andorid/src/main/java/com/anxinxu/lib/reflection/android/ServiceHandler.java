@@ -9,6 +9,7 @@ public class ServiceHandler implements InvocationHandler {
 
     private final IInterface originService;
     private final ServiceManagerReflection.ServiceCall call;
+    private boolean disableHook = false;
 
     public ServiceHandler(IInterface originService, ServiceManagerReflection.ServiceCall call) {
         this.originService = originService;
@@ -17,6 +18,9 @@ public class ServiceHandler implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        if (disableHook) {
+            return method.invoke(originService, args);
+        }
         if (call == null) {
             return method.invoke(originService, args);
         }
@@ -27,5 +31,9 @@ public class ServiceHandler implements InvocationHandler {
         }
         ServiceManagerReflection.ServiceCall.Result result = call.afterCall(originService, method, args, originReturn);
         return result != null && result.hooked ? result.getResult() : needCallOrigin ? originReturn : method.invoke(originService, args);
+    }
+
+    public void unHook() {
+        disableHook = true;
     }
 }

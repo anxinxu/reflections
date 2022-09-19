@@ -12,6 +12,7 @@ public class BinderHandler implements InvocationHandler {
     private final IBinder originBinder;
     private final Class<?> serviceInterface;
     private final ServiceHandler handler;
+    private boolean disableHook = false;
 
     public BinderHandler(IBinder originBinder, Class<?> serviceInterface, ServiceHandler handler) {
         this.originBinder = originBinder;
@@ -21,10 +22,17 @@ public class BinderHandler implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        if (disableHook) {
+            return method.invoke(originBinder, args);
+        }
         String name = method.getName();
         if ("queryLocalInterface".equals(name)) {
             return Proxy.newProxyInstance(originBinder.getClass().getClassLoader(), new Class[]{IBinder.class, IInterface.class, serviceInterface}, handler);
         }
         return method.invoke(originBinder, args);
+    }
+
+    public void unHook() {
+        disableHook = true;
     }
 }

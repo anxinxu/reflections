@@ -25,7 +25,7 @@ public class ServiceManagerReflection {
     @MethodParams(String.class)
     public static RefStaticMethod<IBinder> getService;
 
-    public static boolean hookBinder(String serviceName, String serviceInterfaceName, ServiceCall call) throws IllegalStateException {
+    public static IHookBinderResult hookBinder(String serviceName, String serviceInterfaceName, ServiceCall call) throws IllegalStateException {
         if (serviceInterfaceName == null || serviceInterfaceName.isEmpty()) {
             throw new IllegalStateException("hookBinder serviceInterfaceName is null or empty");
         }
@@ -38,7 +38,19 @@ public class ServiceManagerReflection {
         return hookBinder(serviceName, serviceInterface, call);
     }
 
-    public static boolean hookBinder(String serviceName, Class<?> serviceInterface, ServiceCall call) throws IllegalStateException {
+    public static IHookBinderResult hookBinder(String serviceName, Class<?> serviceInterface, ServiceCall call) {
+        HookBinderResultImpl result = new HookBinderResultImpl();
+        boolean succeed = false;
+        try {
+            succeed = hookBinder(serviceName, serviceInterface, call, result);
+        } catch (Throwable exception) {
+            result.setError(exception);
+        }
+        result.setSucceed(succeed);
+        return result;
+    }
+
+    private static boolean hookBinder(String serviceName, Class<?> serviceInterface, ServiceCall call, HookBinderResultImpl result) throws IllegalStateException {
         if (serviceName == null || serviceName.isEmpty()) {
             throw new IllegalStateException("hookBinder serviceName is null or empty");
         }
@@ -69,17 +81,93 @@ public class ServiceManagerReflection {
             throw new IllegalStateException("hookBinder originService is null");
         }
 
-        ServiceHandler handler = new ServiceHandler(originService, call);
-        IBinder binderProxy = (IBinder) Proxy.newProxyInstance(classLoader, new Class[]{IBinder.class}, new BinderHandler(originBinder, serviceInterface, handler));
+        ServiceHandler serviceHandler = new ServiceHandler(originService, call);
+        BinderHandler binderHandler = new BinderHandler(originBinder, serviceInterface, serviceHandler);
+        IBinder binderProxy = (IBinder) Proxy.newProxyInstance(classLoader, new Class[]{IBinder.class},
+                binderHandler);
 
         cache.put(serviceName, binderProxy);
         if (sCache.isSucceed()) {
+            result.setCache(cache);
+            result.setBinderHandler(binderHandler);
+            result.setServiceHandler(serviceHandler);
+            result.setService(serviceName, originBinder);
             return true;
         } else {
             throw new IllegalStateException("hookBinder", sCache.getError());
         }
     }
 
+    public interface IHookBinderResult {
+        void unhook();
+
+        boolean isHookSucceed();
+
+        Throwable error();
+    }
+
+    private static class HookBinderResultImpl implements IHookBinderResult {
+
+        private Throwable error;
+        private boolean isSucceed = false;
+        private BinderHandler binderHandler;
+        private ServiceHandler serviceHandler;
+        private Map<String, IBinder> cache;
+        private String serviceName;
+        private IBinder originBinder;
+
+        public void setError(Throwable error) {
+            this.error = error;
+        }
+
+        public void setSucceed(boolean succeed) {
+            isSucceed = succeed;
+        }
+
+        public void setService(String serviceName, IBinder originBinder) {
+            this.serviceName = serviceName;
+            this.originBinder = originBinder;
+        }
+
+        public void setBinderHandler(BinderHandler binderHandler) {
+            this.binderHandler = binderHandler;
+        }
+
+        public void setServiceHandler(ServiceHandler serviceHandler) {
+            this.serviceHandler = serviceHandler;
+        }
+
+        public void setCache(Map<String, IBinder> cache) {
+            this.cache = cache;
+        }
+
+        @Override
+        public void unhook() {
+            if (cache != null) {
+                if (serviceName != null && !serviceName.isEmpty()) {
+                    if (originBinder != null) {
+                        cache.put(serviceName, originBinder);
+                    }
+                }
+            }
+            if (binderHandler != null) {
+                binderHandler.unHook();
+            }
+            if (serviceHandler != null) {
+                serviceHandler.unHook();
+            }
+        }
+
+        @Override
+        public boolean isHookSucceed() {
+            return isSucceed;
+        }
+
+        @Override
+        public Throwable error() {
+            return error;
+        }
+    }
 
     public interface ServiceCall {
         default boolean beforeCall(@NonNull IInterface originService, @NonNull Method method, @Nullable Object[] args) {
